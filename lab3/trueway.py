@@ -17,10 +17,20 @@ global res
 global kost
 res=open('rez.py','w')
 res.write("from graph import *\n")
-res.write("windowSize(2000, 2000)\n")
-res.write("canvasSize(2000, 2000)\n")
+res.write("import math\n")
+res.write("windowSize(2000, 1000)\n")
+res.write("canvasSize(2000, 1000)\n")
 pol=[]
 col='white'
+res.write("def elips(x1,y1,x2,y2):\n")
+res.write("    a=(x2-x1)/2\n")
+res.write("    b=(y2-y1)/2\n")
+res.write("    kost=[]\n")
+res.write("    for fi in range(1,360,1):\n")
+res.write("        y=int(b*math.sin(fi*math.pi/180)+y1+b)\n")
+res.write("        x=int(a*math.cos(fi*math.pi/180)+x1+a)\n")
+res.write("        kost.append((x,y))\n")
+res.write("    obj=polygon(kost)\n")
 def mouseClickLine(event):
     global i
     global ls
@@ -52,20 +62,27 @@ def mouseClickElips(event):
     i+=1
     point(x,y)
     if  i == 2:
-        #parabolla(ls[0][0],ls[0][1],ls[1][0],ls[1][1],ls[2][0],ls[2][1])
         elips(ls[0][0],ls[0][1],ls[1][0],ls[1][1])
         obj=point(0,0)
-        ls=[[0,0],[0,0],[0,0]]
         i=0
         res.write("brushColor(")
         res.write("'")
         res.write(col)
         res.write("'")
         res.write(")\n")
-        res.write("polygon(")
-        res.write(str(kost))
-        res.write(")\n")
-
+        #res.write("polygon(")
+        #res.write(str:q(kost))
+        #res.write(")\n")
+        res.write('elips(')
+        res.write(str(ls[0][0]))
+        res.write(',')
+        res.write(str(ls[0][1]))
+        res.write(',')
+        res.write(str(ls[1][0]))
+        res.write(',')
+        res.write(str(ls[1][1]))
+        res.write(')\n')
+        ls=[[0,0],[0,0],[0,0]]
 def MouseMoveLine(event):
     global i
     global ls
@@ -143,6 +160,9 @@ def poly():
     otmena(0)
     brushColor(col)
     polygon(pol)
+    res.write("brushColor(\'")
+    res.write(str(col))
+    res.write("\')\n")
     res.write("polygon(")
     res.write(str(pol))
     res.write(")\n")
@@ -154,8 +174,8 @@ def main():
     global fn2
     fn2=MouseMoveElips
     fn1=mouseClickElips
-    windowSize(2000, 2000)  
-    canvasSize(2000, 2000)
+    windowSize(2000, 1000)  
+    canvasSize(2000, 1000)
     onMouseClick(fn1,1)
     onMouseMove(fn2)
     onMouseClick(otmena,3)
