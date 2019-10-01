@@ -1,7 +1,16 @@
 from graph import *
 import math
+import numpy as np
 windowSize(2000, 1000)
 canvasSize(2000, 1000)
+global xvostobj
+global ptiza1
+global ptiza2
+global ptiza3
+global rib
+global i
+global krilo1
+global krilo2
 def elips(x1,y1,x2,y2):
     a=(x2-x1)/2
     b=(y2-y1)/2
@@ -11,6 +20,7 @@ def elips(x1,y1,x2,y2):
         x=int(a*math.cos(fi*math.pi/180)+x1+a)
         kost.append((x,y))
     obj=polygon(kost)
+    return obj
 def neboslices(pos,h0,l):
     c1=1
     c2=1
@@ -25,32 +35,31 @@ def neboslices(pos,h0,l):
         pos[1]+=h
     brushColor(0,0,255)
     rectangle(pos[0],pos[1],pos[0]+l,1000)
-def duga(x,y,raz):
+def duga(x0,y0,r,fi0,fi1):
     penColor(0,0,0)
-    penSize(5)
-    x1=x-2*raz/3
-    y1=y
-    for i in range(100):
-        y1=math.sqrt(raz*raz+(x1-x)*(x1-x))+y
-        x2=x1+raz/100
-        y2=math.sqrt(raz*raz+(x1-x)*(x1-x))+y
-        line(x1,y1,x2,y2)
-        x1+=4*raz/300
+    penSize(3)
+    kost=[]
+    for i in range(fi0,fi1-1,1):
+        y=-r*math.sin(i*math.pi/180)+y0
+        x=-r*math.cos(i*math.pi/180)+x0
+        x1=-r*math.cos((i+1)*math.pi/180)+x0
+        y1=-r*math.sin((i+1)*math.pi/180)+y0
+        kost.append(line(x,y,x1,y1))
     penSize(1)
-def bird(x,y,raz):
+    return kost
+def bird(x,y,r,fi0,fi1):
     penColor("white")
-    duga(x,y,raz)
-    duga(x+4/3*raz,y,raz)
+    return [duga(x-r/2,y,r/2,fi0,fi1),duga(x+r/2,y,r/2,180-fi1,180-fi0)]
 def telo():
     brushColor('white')
-    elips(319,677,526,761)
+    return elips(319,677,526,761)
 def sheya():
     brushColor('white')
-    elips(510,683,588,723)
+    return elips(510,683,588,723)
 def golova():
     brushColor('white')
     elips(570,662,630,702)
-    brushColor('black')
+    brushColor("black")
     elips(608,669,615,676)
 def klyuv():
     brushColor('yellow')
@@ -60,10 +69,10 @@ def xvost():
     polygon([[344, 693], [301, 650], [301, 650], [268, 698], [268, 698], [323, 720], [344, 693]])
 def krilozad():
     brushColor('white')
-    polygon([[451, 683], [442, 593], [442, 593], [382, 572], [372, 570], [314, 528], [314, 528], [338, 590], [338, 590], [383, 622], [383, 622], [390, 672], [451, 683]])
+    return polygon([[451, 683], [442, 593], [382, 572], [314, 528], [338, 590], [383, 622], [390, 672], [451, 683]])
 def krilopered():
     brushColor('white')
-    polygon([[442, 687], [406, 615], [406, 615], [334, 602], [334, 602], [293, 579], [292, 580], [312, 625], [312, 625], [369, 639], [369, 639], [376, 683], [442, 687]])
+    return polygon([[442, 687], [406, 615], [334, 602], [293, 579], [312, 625], [369, 639], [376, 683], [442, 687]])
 def nogazad():
     brushColor('white')
     elips(420,749,455,809)
@@ -79,49 +88,91 @@ def nogapered():
     brushColor('yellow')
     polygon([[461, 847], [503, 855], [500, 854], [467, 855], [468, 856], [493, 868], [491, 868], [466, 862], [466, 863], [472, 880], [473, 879], [454, 854], [456, 858], [454, 865], [454, 865], [449, 850], [461, 847]])
 def ptiza():
+    global krilo1,krilo2
     nogazad()
     sheya()
     golova()
     klyuv()
     telo()
     xvost()
-    krilozad()
-    krilopered()
+    krilo1=krilozad()
+    krilo2=krilopered()
     nogapered()
 def telo_rib():
     brushColor('gray')
-    elips(681,896,787,942)
+    return elips(681,896,787,942)
 def xvost_rib():
     brushColor('red')
-    polygon([[684, 915], [641, 894], [646, 931], [683, 923], [684, 915]])
+    return polygon([[684, 915], [641, 894], [646, 931], [683, 923], [684, 915]])
 def uppl_rib():
     brushColor('red')
-    polygon([[722, 902], [704, 880], [762, 879], [756, 901], [722, 902]])
-def glaz_rib():
+    return polygon([[722, 902], [704, 880], [762, 879], [756, 901], [722, 902]])
+def glaz_rib1():
     brushColor('blue')
-    elips(763,912,776,926)
+    return elips(763,912,776,926)
+def glaz_rib2():
     brushColor('black')
-    elips(771,921,770,922)
+    return elips(771,921,770,922)
+def glaz_rib3():
     brushColor('white')
-    elips(766,915,771,921)
+    return elips(766,915,771,921)
 def leftpl_rib():
     brushColor('red')
-    polygon([[703, 935], [693, 952], [693, 952], [714, 956], [714, 956], [720, 939], [703, 935]])
+    return polygon([[703, 935], [693, 952], [693, 952], [714, 956], [714, 956], [720, 939], [703, 935]])
 def rightpl_rib():
     brushColor('red')
-    polygon([[749, 940], [750, 956], [773, 947], [759, 933], [749, 940]])
+    return polygon([[749, 940], [750, 956], [773, 947], [759, 933], [749, 940]])
 def riba():
-    rightpl_rib()
-    leftpl_rib()
-    uppl_rib()
-    xvost_rib()
-    telo_rib()
-    glaz_rib()
+    global rib
+    rib=[rightpl_rib(),
+    leftpl_rib(),
+    uppl_rib(),
+    xvost_rib(),
+    telo_rib(),
+    glaz_rib1(),
+    glaz_rib2(),
+    glaz_rib3()
+    ]
 h=[100,50,100,200,200]
 neboslices([0,0],h,1000)
-bird(200,10,70)
-bird(700,200,70)
-bird(500,400,70)
+ptiza1=bird(200,70,50,90,200)
+ptiza2=bird(700,200,50,90,200)
+ptiza3=bird(500,400,50,90,200)
 riba()
 ptiza()
+i=-1
+def update():
+    global i
+    global ptiza1,ptiza2,ptiza3
+    global krilo1,krilo2
+    for t in ptiza1[0]:
+        deleteObject(t)
+    for t in ptiza1[1]:
+        deleteObject(t)
+    ptiza1=bird(200+i*20,70+i*30,50,70+i*20,180+i*20)
+    for t in ptiza2[0]:
+        deleteObject(t)
+    for t in ptiza2[1]:
+        deleteObject(t)
+    ptiza2=bird(700+i*20,200+i*30,50,70+i*20,180+i*20)
+    for t in ptiza3[0]:
+        deleteObject(t)
+    for t in ptiza3[1]:
+        deleteObject(t)
+    ptiza3=bird(500+i*20,400+i*30,50,70+i*20,180+i*20)
+    for t in rib:
+        moveObjectBy(t,i*20,i*20)
+    deleteObject(krilo1)
+    if (i==1):
+        brushColor("white")
+        deleteObject(krilo1) 
+        deleteObject(krilo2)
+    else:
+        brushColor("white")
+        deleteObject(krilo1)
+        krilo1=polygon([[451, 683], [442, 593], [382, 572], [314, 528], [338, 590], [383, 622], [390, 672], [451, 683]])
+        deleteObject(krilo2)
+        krilo2=polygon([[442, 687], [406, 615], [334, 602], [293, 579], [312, 625], [369, 639], [376, 683], [442, 687]])
+    i=-i
+onTimer(update,1000)
 run()
