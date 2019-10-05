@@ -187,4 +187,4 @@ Window.bind("<space>", shoot)
 Window.bind("<KeyPress>", control)
 
 process()
-
+main.mainloop()
