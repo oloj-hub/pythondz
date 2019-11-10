@@ -1,16 +1,16 @@
-import ball
+import ball_lib
 import tkinter
 from random import randrange as rnd, choice
 
-class bullet(ball.ball):
-    def __init__(self,canv,bullets, x=40, y=450,r = 15):
+class bullet(ball_lib.ball):
+    def __init__(self,canv,gravity=1,x=40, y=450,r = 15,k=2):
         self.x = x
         self.y = y
         self.r = r
         self.vx = 0
         self.vy = 0
         self.canv = canv
-        self.bullets=bullets
+        self.gravity=gravity
         self.color = choice(['blue', 'green', 'red', 'brown'])
         self.id = canv.create_oval(
                 self.x - self.r,
@@ -21,6 +21,7 @@ class bullet(ball.ball):
         )
         self.live = 30
         self.timer = 100
+        self.k=k
 
 
     def hittest(self, obj):
@@ -37,10 +38,10 @@ class bullet(ball.ball):
             return False
 
 
-    def denay(self):
+    def denay(self,bullets):
         """ уничтожает потрон через timer фрэймов"""
         self.timer-=1
         if (self.timer==0):
-            self.bullets.remove(self)
+            bullets.remove(self)
             self.canv.delete(self.id)
 
